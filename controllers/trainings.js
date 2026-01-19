@@ -4,6 +4,8 @@ const ObjectId = require('mongodb').ObjectId;
 
 const getAllTrainings = async (req, res) => {
 
+  // #swagger.tags=['Trainings']
+
   try {
 
     const result = await mongodb
@@ -30,6 +32,8 @@ const getAllTrainings = async (req, res) => {
 }
 
 const getTrainingById = async (req, res) => {
+
+  // #swagger.tags=['Trainings']
 
   try {
 
@@ -60,6 +64,8 @@ const getTrainingById = async (req, res) => {
 
 const createTraining = async (req, res) => {
 
+  // #swagger.tags=['Trainings']
+
   const training = {
     title: req.body.title,
     description: req.body.description,
@@ -76,6 +82,8 @@ const createTraining = async (req, res) => {
 }
 
 const updateTraining = async (req, res) => {
+
+  // #swagger.tags=['Trainings']
 
   const trainingId = new ObjectId(req.params.id);
 
@@ -98,6 +106,8 @@ const updateTraining = async (req, res) => {
 }
 
 const deleteTraining = async (req, res) => {
+
+  // #swagger.tags=['Trainings']
   
   const trainingId = new ObjectId(req.params.id);
 

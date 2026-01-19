@@ -4,6 +4,8 @@ const ObjectId = require('mongodb').ObjectId;
 
 const getAllEmployees = async (req, res) => {
 
+  // #swagger.tags=['Employees']
+
   try {
 
     const result = await mongodb
@@ -30,6 +32,8 @@ const getAllEmployees = async (req, res) => {
 }
 
 const getEmployeeById = async (req, res) => {
+
+  // #swagger.tags=['Employees']
 
   try {
 
@@ -60,6 +64,8 @@ const getEmployeeById = async (req, res) => {
 
 const createEmployee = async (req, res) => {
 
+  // #swagger.tags=['Employees']
+
   const employee = {
     firstName: req.body.firstName,
     lastName: req.body.lastName,
@@ -80,6 +86,8 @@ const createEmployee = async (req, res) => {
 }
 
 const updateEmployee = async (req, res) => {
+
+  // #swagger.tags=['Employees']
 
   const employeeId = new ObjectId(req.params.id);
 
@@ -106,6 +114,8 @@ const updateEmployee = async (req, res) => {
 }
 
 const deleteEmployee = async (req, res) => {
+
+  // #swagger.tags=['Employees']
   
   const employeeId = new ObjectId(req.params.id);
 
