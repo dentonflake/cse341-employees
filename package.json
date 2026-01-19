@@ -1,0 +1,13 @@
+{
+  "name": "cse341-employees",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node index.js"
+  },
+  "keywords": [],
+  "author": "Denton Flake",
+  "license": "ISC",
+  "packageManager": "pnpm@10.15.1"
+}
