@@ -37,6 +37,11 @@ const getEmployeeById = async (req, res) => {
 
   try {
 
+    if (!ObjectId.isValid(req.params.id)) {
+      res.status(400).send('Invalid employee ID');
+      return;
+    }
+
     const _id = new ObjectId(req.params.id)
 
     const result = await mongodb
@@ -89,7 +94,12 @@ const updateEmployee = async (req, res) => {
 
   // #swagger.tags=['Employees']
 
-  const employeeId = new ObjectId(req.params.id);
+  if (!ObjectId.isValid(req.params.id)) {
+    res.status(400).send('Invalid employee ID');
+    return;
+  }
+
+  const _id = new ObjectId(req.params.id);
 
   const employee = {
     firstName: req.body.firstName,
@@ -102,7 +112,7 @@ const updateEmployee = async (req, res) => {
   }
 
   const response = await mongodb.getDatabase().db().collection('employees').replaceOne(
-    { _id: employeeId },
+    { _id },
     employee
   );
 
@@ -116,10 +126,15 @@ const updateEmployee = async (req, res) => {
 const deleteEmployee = async (req, res) => {
 
   // #swagger.tags=['Employees']
-  
-  const employeeId = new ObjectId(req.params.id);
 
-  const response = await mongodb.getDatabase().db().collection('employees').deleteOne({ _id: employeeId });
+  if (!ObjectId.isValid(req.params.id)) {
+    res.status(400).send('Invalid employee ID');
+    return;
+  }
+  
+  const _id = new ObjectId(req.params.id);
+
+  const response = await mongodb.getDatabase().db().collection('employees').deleteOne({ _id });
 
   if (response.deletedCount > 0) {
     res.status(204).send();

@@ -37,6 +37,11 @@ const getTrainingById = async (req, res) => {
 
   try {
 
+    if (!ObjectId.isValid(req.params.id)) {
+      res.status(400).send('Invalid training ID format');
+      return;
+    }
+
     const _id = new ObjectId(req.params.id)
 
     const result = await mongodb
@@ -85,7 +90,12 @@ const updateTraining = async (req, res) => {
 
   // #swagger.tags=['Trainings']
 
-  const trainingId = new ObjectId(req.params.id);
+  if (!ObjectId.isValid(req.params.id)) {
+    res.status(400).send('Invalid training ID format');
+    return;
+  }
+
+  const _id = new ObjectId(req.params.id);
 
   const training = {
     title: req.body.title,
@@ -94,7 +104,7 @@ const updateTraining = async (req, res) => {
   }
 
   const response = await mongodb.getDatabase().db().collection('trainings').replaceOne(
-    { _id: trainingId },
+    { _id },
     training
   );
 
@@ -109,9 +119,14 @@ const deleteTraining = async (req, res) => {
 
   // #swagger.tags=['Trainings']
   
-  const trainingId = new ObjectId(req.params.id);
+  if (!ObjectId.isValid(req.params.id)) {
+    res.status(400).send('Invalid training ID format');
+    return;
+  }
 
-  const response = await mongodb.getDatabase().db().collection('trainings').deleteOne({ _id: trainingId });
+  const _id = new ObjectId(req.params.id);
+
+  const response = await mongodb.getDatabase().db().collection('trainings').deleteOne({ _id });
 
   if (response.deletedCount > 0) {
     res.status(204).send();
