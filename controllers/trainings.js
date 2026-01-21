@@ -13,7 +13,7 @@ const getAllTrainings = async (req, res) => {
       .db()
       .collection('trainings')
       .find();
-    
+
     const trainings = await result.toArray();
 
     res
@@ -49,13 +49,13 @@ const getTrainingById = async (req, res) => {
       .db()
       .collection('trainings')
       .find({ _id });
-    
+
     const trainings = await result.toArray();
 
     res
       .setHeader('Content-Type', 'application/json')
       .status(200).json(trainings[0]);
-      
+
   } catch (err) {
 
     res
@@ -71,18 +71,30 @@ const createTraining = async (req, res) => {
 
   // #swagger.tags=['Trainings']
 
-  const training = {
-    title: req.body.title,
-    description: req.body.description,
-    duration: req.body.duration
-  }
+  try {
 
-  const response = await mongodb.getDatabase().db().collection('trainings').insertOne(training);
+    const training = {
+      title: req.body.title,
+      description: req.body.description,
+      duration: req.body.duration
+    }
 
-  if (response.acknowledged) {
-    res.status(204).send();
-  } else {
-    res.status(500).send(response.error || 'Some error occured while creating the training.')
+    const response = await mongodb.getDatabase().db().collection('trainings').insertOne(training);
+
+    if (response.acknowledged) {
+      res.status(204).send();
+    } else {
+      res.status(500).send(response.error || 'Some error occured while creating the training.')
+    }
+
+  } catch (err) {
+
+    res
+      .status(500)
+      .send({
+        message:
+          err.message || 'Some error occurred while creating the training.',
+      });
   }
 }
 
@@ -90,49 +102,71 @@ const updateTraining = async (req, res) => {
 
   // #swagger.tags=['Trainings']
 
-  if (!ObjectId.isValid(req.params.id)) {
-    res.status(400).send('Invalid training ID format');
-    return;
-  }
+  try {
 
-  const _id = new ObjectId(req.params.id);
+    if (!ObjectId.isValid(req.params.id)) {
+      res.status(400).send('Invalid training ID format');
+      return;
+    }
 
-  const training = {
-    title: req.body.title,
-    description: req.body.description,
-    duration: req.body.duration
-  }
+    const _id = new ObjectId(req.params.id);
 
-  const response = await mongodb.getDatabase().db().collection('trainings').replaceOne(
-    { _id },
-    training
-  );
+    const training = {
+      title: req.body.title,
+      description: req.body.description,
+      duration: req.body.duration
+    }
 
-  if (response.modifiedCount > 0) {
-    res.status(204).send();
-  } else {
-    res.status(500).send(response.error || 'Some error occured while updating the training.')
+    const response = await mongodb.getDatabase().db().collection('trainings').replaceOne(
+      { _id },
+      training
+    );
+
+    if (response.modifiedCount > 0) {
+      res.status(204).send();
+    } else {
+      res.status(500).send(response.error || 'Some error occured while updating the training.')
+    }
+  } catch (err) {
+
+    res
+      .status(500)
+      .send({
+        message:
+          err.message || 'Some error occurred while updating the training.',
+      });
   }
 }
 
 const deleteTraining = async (req, res) => {
 
   // #swagger.tags=['Trainings']
-  
-  if (!ObjectId.isValid(req.params.id)) {
-    res.status(400).send('Invalid training ID format');
-    return;
-  }
 
-  const _id = new ObjectId(req.params.id);
+  try {
 
-  const response = await mongodb.getDatabase().db().collection('trainings').deleteOne({ _id });
+    if (!ObjectId.isValid(req.params.id)) {
+      res.status(400).send('Invalid training ID format');
+      return;
+    }
 
-  if (response.deletedCount > 0) {
-    res.status(204).send();
-  } else {
-    res.status(500).send(response.error || 'Some error occured while deleting the training.')
-  }
+    const _id = new ObjectId(req.params.id);
+
+    const response = await mongodb.getDatabase().db().collection('trainings').deleteOne({ _id });
+
+    if (response.deletedCount > 0) {
+      res.status(204).send();
+    } else {
+      res.status(500).send(response.error || 'Some error occured while deleting the training.')
+    }
+  } catch (err) {
+
+    res
+      .status(500)
+      .send({
+        message:
+          err.message || 'Some error occurred while deleting the training.',
+      });
+  } 
 }
 
 module.exports = {

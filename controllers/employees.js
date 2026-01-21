@@ -13,7 +13,7 @@ const getAllEmployees = async (req, res) => {
       .db()
       .collection('employees')
       .find();
-    
+
     const employees = await result.toArray();
 
     res
@@ -49,13 +49,13 @@ const getEmployeeById = async (req, res) => {
       .db()
       .collection('employees')
       .find({ _id });
-    
+
     const employees = await result.toArray();
 
     res
       .setHeader('Content-Type', 'application/json')
       .status(200).json(employees[0]);
-      
+
   } catch (err) {
 
     res
@@ -71,22 +71,34 @@ const createEmployee = async (req, res) => {
 
   // #swagger.tags=['Employees']
 
-  const employee = {
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    email: req.body.email,
-    phone: req.body.phone,
-    jobTitle: req.body.jobTitle,
-    salary: req.body.salary,
-    hireDate: req.body.hireDate
-  }
+  try {
 
-  const response = await mongodb.getDatabase().db().collection('employees').insertOne(employee);
+    const employee = {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      phone: req.body.phone,
+      jobTitle: req.body.jobTitle,
+      salary: req.body.salary,
+      hireDate: req.body.hireDate
+    }
 
-  if (response.acknowledged) {
-    res.status(204).send();
-  } else {
-    res.status(500).send(response.error || 'Some error occured while creating the employee.')
+    const response = await mongodb.getDatabase().db().collection('employees').insertOne(employee);
+
+    if (response.acknowledged) {
+      res.status(204).send();
+    } else {
+      res.status(500).send(response.error || 'Some error occured while creating the employee.')
+    }
+
+  } catch (err) {
+
+    res
+      .status(500)
+      .send({
+        message:
+          err.message || 'Some error occurred while creating the employee.',
+      });
   }
 }
 
@@ -94,32 +106,44 @@ const updateEmployee = async (req, res) => {
 
   // #swagger.tags=['Employees']
 
-  if (!ObjectId.isValid(req.params.id)) {
-    res.status(400).send('Invalid employee ID');
-    return;
-  }
+  try {
 
-  const _id = new ObjectId(req.params.id);
+    if (!ObjectId.isValid(req.params.id)) {
+      res.status(400).send('Invalid employee ID');
+      return;
+    }
 
-  const employee = {
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    email: req.body.email,
-    phone: req.body.phone,
-    jobTitle: req.body.jobTitle,
-    salary: req.body.salary,
-    hireDate: req.body.hireDate
-  }
+    const _id = new ObjectId(req.params.id);
 
-  const response = await mongodb.getDatabase().db().collection('employees').replaceOne(
-    { _id },
-    employee
-  );
+    const employee = {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      phone: req.body.phone,
+      jobTitle: req.body.jobTitle,
+      salary: req.body.salary,
+      hireDate: req.body.hireDate
+    }
 
-  if (response.modifiedCount > 0) {
-    res.status(204).send();
-  } else {
-    res.status(500).send(response.error || 'Some error occured while updating the employee.')
+    const response = await mongodb.getDatabase().db().collection('employees').replaceOne(
+      { _id },
+      employee
+    );
+
+    if (response.modifiedCount > 0) {
+      res.status(204).send();
+    } else {
+      res.status(500).send(response.error || 'Some error occured while updating the employee.')
+    }
+
+  } catch (err) {
+
+    res
+      .status(500)
+      .send({
+        message:
+          err.message || 'Some error occurred while updating the employee.',
+      });
   }
 }
 
@@ -127,19 +151,31 @@ const deleteEmployee = async (req, res) => {
 
   // #swagger.tags=['Employees']
 
-  if (!ObjectId.isValid(req.params.id)) {
-    res.status(400).send('Invalid employee ID');
-    return;
-  }
-  
-  const _id = new ObjectId(req.params.id);
+  try {
 
-  const response = await mongodb.getDatabase().db().collection('employees').deleteOne({ _id });
+    if (!ObjectId.isValid(req.params.id)) {
+      res.status(400).send('Invalid employee ID');
+      return;
+    }
 
-  if (response.deletedCount > 0) {
-    res.status(204).send();
-  } else {
-    res.status(500).send(response.error || 'Some error occured while deleting the employee.')
+    const _id = new ObjectId(req.params.id);
+
+    const response = await mongodb.getDatabase().db().collection('employees').deleteOne({ _id });
+
+    if (response.deletedCount > 0) {
+      res.status(204).send();
+    } else {
+      res.status(500).send(response.error || 'Some error occured while deleting the employee.')
+    }
+
+  } catch (err) {
+
+    res
+      .status(500)
+      .send({
+        message:
+          err.message || 'Some error occurred while deleting the employee.',
+      });
   }
 }
 
