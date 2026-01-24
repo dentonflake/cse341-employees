@@ -5,10 +5,12 @@ const router = express.Router();
 
 const employeesController = require('../controllers/employees');
 
+const { isAuthenticated } = require('../middleware/authenticate');
+
 router.get('/', employeesController.getAllEmployees);
 router.get('/:id', employeesController.getEmployeeById);
-router.post('/', employeeValidationRules(), validate, employeesController.createEmployee);
-router.put('/:id', employeeValidationRules(), validate, employeesController.updateEmployee);
-router.delete('/:id', employeesController.deleteEmployee);
+router.post('/', isAuthenticated, employeeValidationRules(), validate, employeesController.createEmployee);
+router.put('/:id', isAuthenticated, employeeValidationRules(), validate, employeesController.updateEmployee);
+router.delete('/:id', isAuthenticated, employeesController.deleteEmployee);
 
 module.exports = router;
